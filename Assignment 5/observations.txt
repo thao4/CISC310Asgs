@@ -1,0 +1,17 @@
+Matthew Thao
+Assignment #5
+April 2, 2024
+
+The three different page-replacement methods each have different page faults
+depending on the size of the frame and the page-reference string.
+With very little page frames, all three methods almost have the same amount of
+page faults. However, with larger frames and even larger page-reference strings,
+The difference between the methods are more prevalent. The FIFO Algorithm
+trends toward having larger page faults because it only gets rid of the
+pages that come in first without regards to the potential pages later in the 
+reference string. The LRU algorithm uses the recencies of the page uses and
+produces sightly less page faults. It is a little bit better than the FIFO algorithm.
+The optimal algorithm has the least page faults out of the three because it 
+accounts for future pages that will be referenced again.
+
+In total, I have spent roughly 5 hours on this assignments.
