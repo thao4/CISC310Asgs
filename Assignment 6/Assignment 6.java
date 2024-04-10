@@ -18,7 +18,7 @@ class Asg6 {
         ArrayList<Integer> data1 = new ArrayList<>();
         ArrayList<Integer> data2 = new ArrayList<>();
         try {
-            output = new FileWriter("output2.txt", false);
+            output = new FileWriter("output.txt", false);
             output.append("Matthew Thao, 4.2.2024, Assignment 6.\n");
             File file = new File("Asg6Data.txt");
             Scanner reader = new Scanner(file);
@@ -107,6 +107,8 @@ class Asg6 {
     }
 
     public static int SCAN(int cylinders, int startPos, ArrayList<Integer> data) {
+        ArrayList<Integer> left = new ArrayList<>();
+        ArrayList<Integer> right = new ArrayList<>();
         return -1;
     }
 
