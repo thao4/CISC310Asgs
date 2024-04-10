@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class Asg6 {
+class Asg6 {
     public static FileWriter output;
 
     public static void main(String[] args) {
