@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Collections;
 
 class Asg6 {
     public static FileWriter output;
@@ -77,15 +78,22 @@ class Asg6 {
         }
         return seek_count;
     }
-
+    public static ArrayList<Integer> copyData(ArrayList<Integer> data){
+        ArrayList<Integer> data2 = new ArrayList<>();
+        for(int i = 0; i < data.size();i++){
+            data2.add(data.get(i));
+        }
+        return data2;
+    }
     public static int SSTF(int cylinders, Integer startPos, ArrayList<Integer> data) {
         int seek_count = 0;
+        ArrayList<Integer> data2 = copyData(data);
         Integer minPos;
-        while (data.size() > 0) {
-            minPos = findMinDistance(data, startPos);
+        while (data2.size() > 0) {
+            minPos = findMinDistance(data2, startPos);
             seek_count += calcDistance(minPos, startPos);
-            if (data.contains(startPos)) {
-                data.remove(startPos);
+            if (data2.contains(startPos)) {
+                data2.remove(startPos);
             }
             startPos = minPos;
         }
@@ -109,11 +117,55 @@ class Asg6 {
     public static int SCAN(int cylinders, int startPos, ArrayList<Integer> data) {
         ArrayList<Integer> left = new ArrayList<>();
         ArrayList<Integer> right = new ArrayList<>();
-        return -1;
+        left.add(0);
+        int seek_count = 0;
+        for(int i = 0; i < data.size();i++){
+            if(data.get(i)<startPos){
+                left.add(data.get(i));
+            }
+            if(data.get(i)>startPos){
+                right.add(data.get(i));
+            }
+        }
+        Collections.sort(right);
+        Collections.sort(left);
+        for(int i = left.size()-1; i >= 0 ; i--){
+            seek_count += calcDistance(startPos, left.get(i));
+            startPos = left.get(i);
+        }
+        for(int i = 0; i < right.size();i++){
+            //System.out.println("Distance: "+startPos+" and "+data.get(i)+" = "+calcDistance(startPos,data.get(i)));
+            seek_count += calcDistance(startPos,right.get(i));
+            startPos = right.get(i);
+        }
+        return seek_count;
     }
 
     public static int CSCAN(int cylinders, int startPos, ArrayList<Integer> data) {
-        return -1;
+        ArrayList<Integer> left = new ArrayList<>();
+        ArrayList<Integer> right = new ArrayList<>();
+        right.add(cylinders-1);
+        left.add(0);
+        int seek_count = 0;
+        for(int i = 0; i < data.size();i++){
+            if(data.get(i)<startPos){
+                left.add(data.get(i));
+            }
+            if(data.get(i)>startPos){
+                right.add(data.get(i));
+            }
+        }
+        Collections.sort(right);
+        Collections.sort(left);
+        for(int i = left.size()-1; i >= 0 ; i--){
+            seek_count += calcDistance(startPos, left.get(i));
+            startPos = left.get(i);
+        }
+        for(int i = right.size()-1; i >= 0 ; i--){
+            seek_count += calcDistance(startPos, right.get(i));
+            startPos = right.get(i);
+        }
+        return seek_count;
     }
 
     public static int LOOK(int cylinders, int startPos, ArrayList<Integer> data) {
