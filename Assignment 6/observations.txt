@@ -1,7 +1,17 @@
 Matthew Thao
-Assignment #5
+Assignment #6
 April 16, 2024
 
-
+From this assignment, I learned the different types of disk scheduling algorithms 
+and the positives and negatives of each. Algorithms like FCFS are easier to implement
+because of its simplicity but makes too many head movement. Therefore, having additional
+computations will decrease the total head movement. For example, SSTF had significantly
+better total head movement because it tried to find the shortest request distance from the head.
+However, this requires finding the next request, which when done with a large
+data set, will lead to longer waiting and response time. It will also have to keep moving left
+and right. SCAN, CSCAN, LOOK, and CLOOK provide better waiting and response time, as well as
+a better total head movement compared to FCFS. They start in one direction and process as many
+requests as they can until they reach either the last request or the end of the disk. Then,
+they go back and finish whatever request is left over.
 
 In total, I have spent roughly 4 hours on this assignments.
