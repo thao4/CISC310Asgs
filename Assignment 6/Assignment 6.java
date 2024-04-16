@@ -10,25 +10,35 @@ class Asg6 {
     public static FileWriter output;
 
     public static void main(String[] args) {
+        // first data set
         int cylinders1;
         int startPos1;
+        String[] strData1;
+        ArrayList<Integer> data1 = new ArrayList<>();
+        // second data set
         int cylinders2;
         int startPos2;
-        String[] strData1;
         String[] strData2;
-        ArrayList<Integer> data1 = new ArrayList<>();
         ArrayList<Integer> data2 = new ArrayList<>();
+
         try {
+            // create file to write to
             output = new FileWriter("output.txt", false);
             output.append("Matthew Thao, 4.2.2024, Assignment 6.\n");
+            
+            // read Asg6Data.txt and collect data values to be used
             File file = new File("Asg6Data.txt");
             Scanner reader = new Scanner(file);
+            
+            // first set of data
             cylinders1 = Integer.valueOf(reader.nextLine());
             startPos1 = Integer.valueOf(reader.nextLine());
             strData1 = reader.nextLine().split(" ");
             for (int i = 0; i < strData1.length; i++) {
                 data1.add(Integer.valueOf(strData1[i]));
             }
+
+            //second set of data
             cylinders2 = Integer.valueOf(reader.nextLine());
             startPos2 = Integer.valueOf(reader.nextLine());
             strData2 = reader.nextLine().split(" ");
@@ -36,6 +46,8 @@ class Asg6 {
                 data2.add(Integer.valueOf(strData2[i]));
             }
             reader.close();
+
+            // print results of first data set using disk scheduling algorithms
             output.append(
                     "\nFor FCFS, the total head movement was " + FCFS(cylinders1, startPos1, data1) + " cylinders.");
             output.append(
@@ -49,6 +61,7 @@ class Asg6 {
             output.append(
                     "\nFor CLOOK, the total head movement was " + CLOOK(cylinders1, startPos1, data1) + " cylinders.");
 
+            // print results of second data set using disk scheduling algorithms
             output.append("\n\n\nFor FCFS, the total head movement was " + FCFS(cylinders2, startPos2, data2)
                     + " cylinders.");
             output.append(
@@ -70,6 +83,15 @@ class Asg6 {
         }
     }
 
+    /**
+     * Process service requests from the order they are given. Operates on a first-come first-serve basis.
+     * 
+     * @param cylinders - number of cylinders
+     * @param startPos - starting position / head
+     * @param data - list of service requests in the disk
+     * @return - total seek count travelled to service the requests in the disk
+     */
+
     public static int FCFS(int cylinders, Integer startPos, ArrayList<Integer> data) {
         int seek_count = 0;
         for (int i = 0; i < data.size(); i++) {
@@ -78,8 +100,15 @@ class Asg6 {
         }
         return seek_count;
     }
-
+    
+    /**
+     * Copies the elements from data into a new ArrayList. (done to prevent changing original data)
+     * 
+     * @param data - list of service requests in the disk
+     * @return a copy of data
+     */
     public static ArrayList<Integer> copyData(ArrayList<Integer> data) {
+        
         ArrayList<Integer> data2 = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             data2.add(data.get(i));
@@ -87,6 +116,14 @@ class Asg6 {
         return data2;
     }
 
+    /**
+     * 
+     * 
+     * @param cylinders - number of cylinders
+     * @param startPos - starting position / head
+     * @param data - list of service requests in the disk
+     * @return - total seek count travelled to service the requests in the disk
+     */
     public static int SSTF(int cylinders, Integer startPos, ArrayList<Integer> data) {
         int seek_count = 0;
         ArrayList<Integer> data2 = copyData(data);
