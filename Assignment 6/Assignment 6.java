@@ -1,3 +1,16 @@
+
+/**
+ * Matthew Thao
+ * Assignment #5
+ * 4/16/2024
+ * 
+ * The program will use six different disk scheduling algorithms to service all the requests in a disk. 
+ * A data file will be read from and used to calculate the total head movement of each algorithm. The 
+ * data file will provide a starting position of the head, the number of cylinders in the disk, and 
+ * the list of requests in the disk. The algorithms used are FCFS, SSTF, SCAN, CSCAN, LOOK, and CLOOK.
+ * 
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -24,7 +37,7 @@ class Asg6 {
         try {
             // create file to write to
             output = new FileWriter("output.txt", false);
-            output.append("Matthew Thao, 4.2.2024, Assignment 6.\n");
+            output.append("Matthew Thao, 4.16.2024, Assignment 6.\n");
             
             // read Asg6Data.txt and collect data values to be used
             File file = new File("Asg6Data.txt");
@@ -93,9 +106,10 @@ class Asg6 {
      */
 
     public static int FCFS(int cylinders, Integer startPos, ArrayList<Integer> data) {
-        int seek_count = 0;
+        int seek_count = 0; 
         for (int i = 0; i < data.size(); i++) {
             seek_count += calcDistance(data.get(i), startPos);
+            // update head
             startPos = data.get(i);
         }
         return seek_count;
@@ -117,34 +131,48 @@ class Asg6 {
     }
 
     /**
-     * 
+     * Process requests that are closest to the current head position.
      * 
      * @param cylinders - number of cylinders
      * @param startPos - starting position / head
      * @param data - list of service requests in the disk
      * @return - total seek count travelled to service the requests in the disk
      */
+
     public static int SSTF(int cylinders, Integer startPos, ArrayList<Integer> data) {
         int seek_count = 0;
-        ArrayList<Integer> data2 = copyData(data);
+        ArrayList<Integer> data2 = copyData(data); // duplicate data for modification purposes
         Integer minPos;
+        // keep going until all requests have been serviced
         while (data2.size() > 0) {
+            // find the closest request to the current head
             minPos = findMinDistance(data2, startPos);
             seek_count += calcDistance(minPos, startPos);
+            // remove request from list of requests
             if (data2.contains(startPos)) {
                 data2.remove(startPos);
             }
+            // update head
             startPos = minPos;
         }
         return seek_count;
     }
 
+    /**
+     * SSTF helper method to find the closest request to the current head
+     * 
+     * @param data - list of service requests in disk
+     * @param pos - head position
+     * @return
+     */
+
     private static int findMinDistance(ArrayList<Integer> data, int pos) {
-        int minDistance = Integer.MAX_VALUE;
+        int minDistance = Integer.MAX_VALUE; // set minDistance to invalid value
         int distance;
         int minDistanceIndex = 0;
         for (int i = 0; i < data.size(); i++) {
             distance = calcDistance(data.get(i), pos);
+            // update shortest position if distance between head and current position is the lowest
             if (distance < minDistance) {
                 minDistance = distance;
                 minDistanceIndex = i;
@@ -153,11 +181,22 @@ class Asg6 {
         return data.get(minDistanceIndex);
     }
 
+    /**
+     * Process requests by scanning requests to the right of the head, then checks left 
+     * until all requests are done.
+     * 
+     * @param cylinders - number of cylinders
+     * @param startPos - starting position / head
+     * @param data - list of service requests in the disk
+     * @return - total seek count travelled to service the requests in the disk
+     */
+
     public static int SCAN(int cylinders, int startPos, ArrayList<Integer> data) {
         ArrayList<Integer> left = new ArrayList<>();
         ArrayList<Integer> right = new ArrayList<>();
-        left.add(0);
-        int seek_count = 0;
+        right.add(cylinders-1); // check all the way right
+        int seek_count = 0; 
+        // create ordering to process requests
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i) < startPos) {
                 left.add(data.get(i));
@@ -168,23 +207,38 @@ class Asg6 {
         }
         Collections.sort(right);
         Collections.sort(left);
+
+        // explore all the way right first
+        for (int i = 0; i < right.size(); i++) {
+            seek_count += calcDistance(startPos, right.get(i));
+            startPos = right.get(i);
+        }
+        
+        // start exploring left until all requests are serviced
         for (int i = left.size() - 1; i >= 0; i--) {
             seek_count += calcDistance(startPos, left.get(i));
             startPos = left.get(i);
         }
-        for (int i = 0; i < right.size(); i++) {
-            // System.out.println("Distance: "+startPos+" and "+data.get(i)+" =
-            // "+calcDistance(startPos,data.get(i)));
-            seek_count += calcDistance(startPos, right.get(i));
-            startPos = right.get(i);
-        }
         return seek_count;
     }
+
+
+    /**
+     * Process requests by making a cycle starting at head and scanning all requests
+     * as it goes in a cycle. It starts scanning the right side of the head first.
+     * 
+     * @param cylinders - number of cylinders
+     * @param startPos - starting position / head
+     * @param data - list of service requests in the disk
+     * @return - total seek count travelled to service the requests in the disk
+     */
 
     public static int CSCAN(int cylinders, int startPos, ArrayList<Integer> data) {
         int seek_count = 0;
         ArrayList<Integer> left = new ArrayList<>();
         ArrayList<Integer> right = new ArrayList<>();
+        
+        // create ordering to process requests
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i) < startPos) {
                 left.add(data.get(i));
@@ -193,14 +247,18 @@ class Asg6 {
                 right.add(data.get(i));
             }
         }
-        left.add(0);
-        right.add(cylinders - 1);
+        left.add(0); // left side of cylinder
+        right.add(cylinders - 1); // right side of cylinder
         Collections.sort(left);
         Collections.sort(right);
+
+        // scan all the way right of head first
         for (int i = 0; i < right.size(); i++) {
             seek_count += calcDistance(right.get(i), startPos);
             startPos = right.get(i);
         }
+        
+        // come back to start and start scanning until all requests are completed
         for (int i = 0; i < left.size(); i++) {
             seek_count += calcDistance(left.get(i), startPos);
             startPos = left.get(i);
@@ -208,8 +266,20 @@ class Asg6 {
         return seek_count;
     }
 
+    /**
+     * Process requests by looking for all requests in one direction, then goes in the 
+     * opposite direction to finish all requests in disk.
+     * 
+     * @param cylinders - number of cylinders
+     * @param startPos - starting position / head
+     * @param data - list of service requests in the disk
+     * @return - total seek count travelled to service the requests in the disk
+     */
+
     public static int LOOK(int cylinders, int startPos, ArrayList<Integer> data) {
         int seek_count = 0;
+
+        // create ordering to process requests
         ArrayList<Integer> left = new ArrayList<>();
         ArrayList<Integer> right = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
@@ -222,19 +292,37 @@ class Asg6 {
         }
         Collections.sort(left);
         Collections.sort(right);
+        
+        // process all requests on the right of the head
+        for (int i = 0; i < right.size(); i++) {
+            seek_count += calcDistance(right.get(i), startPos);
+            startPos = right.get(i);
+        }
+        
+        // once all requests on the right of the head are done,
+        // come back and finish all requests on the left side
         for (int i = left.size() - 1; i >= 0; i--) {
             seek_count += calcDistance(left.get(i), startPos);
             startPos = left.get(i);
         }
-        for (int i = 0; i < right.size(); i++) {
-            seek_count += calcDistance(right.get(i), startPos);
-            startPos = right.get(i);
-        }
         return seek_count;
     }
 
+
+    /**
+     * Process requests by looking for all requests in one direction of the head,
+     * then cycle to the farthest request in the opposite direction and continue
+     * processing requests in the same direction until all requests are serviced.
+     * 
+     * @param cylinders - number of cylinders
+     * @param startPos - starting position / head
+     * @param data - list of service requests in the disk
+     * @return - total seek count travelled to service the requests in the disk
+     */
+
     public static int CLOOK(int cylinders, int startPos, ArrayList<Integer> data) {
         int seek_count = 0;
+        // create ordering to process requests
         ArrayList<Integer> left = new ArrayList<>();
         ArrayList<Integer> right = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
@@ -247,10 +335,16 @@ class Asg6 {
         }
         Collections.sort(left);
         Collections.sort(right);
+        
+        // process all requests on the right of the head
         for (int i = 0; i < right.size(); i++) {
             seek_count += calcDistance(right.get(i), startPos);
             startPos = right.get(i);
         }
+        
+        // cycle back to the farthest request on the left side and
+        // continue processing in the same direction until all
+        // requests are serviced
         for (int i = 0; i < left.size(); i++) {
             seek_count += calcDistance(left.get(i), startPos);
             startPos = left.get(i);
@@ -258,6 +352,14 @@ class Asg6 {
         return seek_count;
     }
 
+    /**
+     * Helper method for the disk algorithms to calculate
+     * the distance between two requests in the disk.
+     * 
+     * @param pos1 - first position
+     * @param pos2 - second position
+     * @return
+     */
     public static int calcDistance(int pos1, int pos2) {
         return Math.abs(pos1 - pos2);
     }

@@ -1,0 +1,16 @@
+Matthew Thao, 4.16.2024, Assignment 6.
+
+For FCFS, the total head movement was 640 cylinders.
+For SSTF, the total head movement was 236 cylinders.
+For SCAN, the total head movement was 331 cylinders.
+For CSCAN, the total head movement was 382 cylinders.
+For LOOK, the total head movement was 299 cylinders.
+For CLOOK, the total head movement was 322 cylinders.
+
+
+For FCFS, the total head movement was 2716 cylinders.
+For SSTF, the total head movement was 1200 cylinders.
+For SCAN, the total head movement was 1648 cylinders.
+For CSCAN, the total head movement was 1970 cylinders.
+For LOOK, the total head movement was 1350 cylinders.
+For CLOOK, the total head movement was 1472 cylinders.
