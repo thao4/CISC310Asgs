@@ -2,7 +2,8 @@ import java.util.*;
 import java.io.*;
 
 class Asg7 {
-    static int num = 100;
+    static int data = 0;
+    static Object lock = new Object();
 
     /**
      * The Producer class will generate an instance of a thread that can be run by other processes.
@@ -11,20 +12,22 @@ class Asg7 {
      */
     static class Producer implements Runnable {
         Random rand = new Random();
+        int counter = 0;
 
         @Override
         public void run() {
-            for (int x = 0; x <= 4; x++) {
+            while(counter != 8) {
                 // wait x amount of seconds
-                synchronized (this) {
+                synchronized (lock) {
                     try {
                         wait((rand.nextInt(2) + 1) * 1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
+                counter++;
                 // add loop count to shared variable
-                num += x;
+                data += counter;
             }
         }
     }
@@ -41,9 +44,9 @@ class Asg7 {
 
         @Override
         public void run() {
-            for (int x = 0; x <= 4; x++) {
+            while (data>=0) {
                 // wait x amount of seconds
-                synchronized (this) {
+                synchronized (lock) {
 
                     try {
                         wait((rand.nextInt(2) + 1) * 1000);
@@ -52,7 +55,7 @@ class Asg7 {
                     }
                 }
                 // add current shared variable to sum
-                sum += num;
+                sum += data;
             }
             // output the sum into a file
             FileWriter output = null;
