@@ -1,0 +1,12 @@
+Matthew Thao
+Assignment #7
+April 30, 2024
+
+Comparing this program with the program created for assignment #2, this was able to
+produce consistent results and fixed the race condition issue caused by the threads
+in assignment #2. Whenever one thread entered the critical section, it would check
+to see if there is any work to do and if not, then it would immediately exit out
+of the section. This lock guaranteed a specific result every time the program was
+ran and made sure that both threads were operating correctly.
+
+In total, I have spent roughly 2 hours on this assignment.

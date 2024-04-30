@@ -1,3 +1,16 @@
+
+/**
+ * Matthew Thao
+ * Assignment #7
+ * 4/30/2024
+ * 
+ * The program is similar to assignment 2, where there is a producer and a consumer. Both will share an integer variable data and a lock. 
+ * The producer will do its work when there the lock is open. Once it finishes, it will wait until the consumer has accessed the data section.
+ * Both producer and consumer will wait a random amount of time from 1 to 2 seconds. When either enters the data section, they will lock
+ * the data and reopen once it completes. The program will end once the producer has reached a counter of 8.
+ * 
+ */
+
 import java.util.*;
 import java.io.*;
 
@@ -101,7 +114,7 @@ class Asg7 extends Thread {
             // output the sum into a file
             FileWriter output = null;
             try {
-                output = new FileWriter("output3.txt", true);
+                output = new FileWriter("output.txt", true);
                 output.append("\nThe sum is " + sum);
                 output.close();
             } catch (IOException e) {
